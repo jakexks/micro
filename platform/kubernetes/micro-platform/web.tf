@@ -22,8 +22,6 @@ locals {
       "MICRO_ENABLE_ACME"    = "true",
       "MICRO_ACME_PROVIDER"  = "certmagic",
       "MICRO_ACME_HOSTS"     = var.web_acme_hosts
-      "MICRO_STORE"          = "service"
-      "MICRO_STORE_ADDRESS"  = ""
       "MICRO_STORE_DATABASE" = "micro"
       "MICRO_STORE_TABLE"    = "micro"
       "MICRO_WEB_NAMESPACE"  = "domain"
@@ -49,10 +47,10 @@ resource "kubernetes_secret" "web_cert" {
     labels      = local.web_labels
     annotations = local.web_annotations
   }
-  data = {
+  data = merge(local.common_tls_certs, {
     "cert.pem" = module.web_cert.cert_pem
     "key.pem"  = module.web_cert.key_pem
-  }
+  })
   type = "Opaque"
 }
 
@@ -116,21 +114,6 @@ resource "kubernetes_deployment" "web" {
           volume_mount {
             mount_path = "/etc/micro/certs"
             name       = "certs"
-          }
-          volume_mount {
-            mount_path = "/etc/micro/ca"
-            name       = "platform-ca"
-          }
-        }
-        volume {
-          name = "platform-ca"
-          secret {
-            secret_name  = kubernetes_secret.platform_ca.metadata[0].name
-            default_mode = "0600"
-            items {
-              key  = "ca.pem"
-              path = "ca.pem"
-            }
           }
         }
         volume {

@@ -37,10 +37,10 @@ resource "kubernetes_secret" "bot_cert" {
     labels      = local.bot_labels
     annotations = local.bot_annotations
   }
-  data = {
+  data = merge(local.common_tls_certs, {
     "cert.pem" = module.bot_cert.cert_pem
     "key.pem"  = module.bot_cert.key_pem
-  }
+  })
   type = "Opaque"
 }
 
@@ -94,21 +94,6 @@ resource "kubernetes_deployment" "bot" {
           volume_mount {
             mount_path = "/etc/micro/certs"
             name       = "certs"
-          }
-          volume_mount {
-            mount_path = "/etc/micro/ca"
-            name       = "platform-ca"
-          }
-        }
-        volume {
-          name = "platform-ca"
-          secret {
-            secret_name  = kubernetes_secret.platform_ca.metadata[0].name
-            default_mode = "0600"
-            items {
-              key  = "ca.pem"
-              path = "ca.pem"
-            }
           }
         }
         volume {

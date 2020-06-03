@@ -18,6 +18,13 @@ locals {
     "MICRO_REGISTER_INTERVAL" = "30"
     "MICRO_STORE"             = "cockroach"
     "MICRO_STORE_ADDRESS"     = "postgres://root@cockroachdb-public.${var.resource_namespace}.svc:26257/?sslmode=disable"
+    "MICRO_SECURE"            = "true"
+  }
+  common_tls_certs = {
+    "broker-ca.pem"   = data.kubernetes_secret.nats_certs.data["ca.pem"]
+    "broker-cert.pem" = data.kubernetes_secret.nats_certs.data["cert.pem"]
+    "broker-key.pem"  = data.kubernetes_secret.nats_certs.data["key.pem"]
+    "ca.pem"          = tls_self_signed_cert.platform_ca_cert.cert_pem
   }
 }
 
@@ -100,4 +107,11 @@ resource "tls_self_signed_cert" "platform_ca_cert" {
     "server_auth",
   ]
   is_ca_certificate = true
+}
+
+data "kubernetes_secret" "nats_certs" {
+  metadata {
+    namespace = var.resource_namespace
+    name      = "nats-certs"
+  }
 }

@@ -39,10 +39,10 @@ resource "kubernetes_secret" "debug_cert" {
     labels      = local.debug_labels
     annotations = local.debug_annotations
   }
-  data = {
+  data = merge(local.common_tls_certs, {
     "cert.pem" = module.debug_cert.cert_pem
     "key.pem"  = module.debug_cert.key_pem
-  }
+  })
   type = "Opaque"
 }
 
@@ -96,21 +96,6 @@ resource "kubernetes_deployment" "debug" {
           volume_mount {
             mount_path = "/etc/micro/certs"
             name       = "certs"
-          }
-          volume_mount {
-            mount_path = "/etc/micro/ca"
-            name       = "platform-ca"
-          }
-        }
-        volume {
-          name = "platform-ca"
-          secret {
-            secret_name  = kubernetes_secret.platform_ca.metadata[0].name
-            default_mode = "0600"
-            items {
-              key  = "ca.pem"
-              path = "ca.pem"
-            }
           }
         }
         volume {

@@ -2,6 +2,8 @@ module github.com/micro/micro/v2
 
 go 1.13
 
+replace github.com/micro/go-micro/v2 => github.com/jakexks/go-micro/v2 v2.7.1-0.20200603093145-a047782fec99
+
 require (
 	github.com/aws/aws-sdk-go v1.23.0
 	github.com/boltdb/bolt v1.3.1

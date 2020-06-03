@@ -1,6 +1,7 @@
 variable "resource_namespace" {
   description = "Namespace name to create"
   type        = string
+  default     = "resource"
 }
 
 variable "image_pull_policy" {
@@ -41,4 +42,10 @@ variable "cockroachdb_storage" {
 variable "jaeger_image" {
   description = "Jaeger Tracing All in one image"
   default     = "jaegertracing/all-in-one"
+}
+
+variable "private_key_alg" {
+  type        = string
+  description = "Private Key algorithm for platform CA"
+  default     = "ECDSA"
 }
