@@ -29,7 +29,7 @@ func Commands() []*cli.Command {
 				&cli.StringFlag{
 					Name:  "out_dir",
 					Usage: "Output Directory",
-					Value: filepath.Join(home, "certs"),
+					Value: filepath.Join(home, ".micro", "certs"),
 				},
 			},
 			Subcommands: []*cli.Command{
