@@ -12,13 +12,15 @@ locals {
     "MICRO_LOG_LEVEL"         = "debug"
     "MICRO_BROKER"            = "nats"
     "MICRO_BROKER_ADDRESS"    = "nats-cluster.${var.resource_namespace}.svc"
-    "MICRO_REGISTRY"          = "etcd"
-    "MICRO_REGISTRY_ADDRESS"  = "etcd-cluster.${var.resource_namespace}.svc"
+    "MICRO_REGISTRY"          = "service"
+    "MICRO_REGISTRY_ADDRESS"  = "${replace(local.registry_name, ".", "-")}.${var.platform_namespace}.svc:${local.registry_port}"
     "MICRO_REGISTER_TTL"      = "60"
     "MICRO_REGISTER_INTERVAL" = "30"
     "MICRO_STORE"             = "cockroach"
     "MICRO_STORE_ADDRESS"     = "postgres://root@cockroachdb-public.${var.resource_namespace}.svc:26257/?sslmode=disable"
     "MICRO_SECURE"            = "true"
+    "MICRO_NETWORK"           = "go.micro.network"
+    "MICRO_NETWORK_ADDRESS"   = "${replace(local.network_name, ".", "-")}.${var.platform_namespace}.svc:${local.network_port}"
   }
   common_tls_certs = {
     "broker-ca.pem"   = data.kubernetes_secret.nats_certs.data["ca.pem"]

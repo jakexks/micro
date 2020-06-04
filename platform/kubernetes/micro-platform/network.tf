@@ -18,6 +18,7 @@ locals {
     local.common_env_vars,
     {
       "MICRO_SERVER_ADDRESS"             = "0.0.0.0:8080"
+      "MICRO_NETWORK_ADDRESS"            = ""
       "MICRO_NETWORK_TOKEN"              = "micro.mu"
       "MICRO_NETWORK_ADVERTISE_STRATEGY" = "best"
     }

@@ -1,8 +1,12 @@
 package certs
 
 import (
+	"bytes"
+	"crypto/ed25519"
 	"crypto/rand"
+	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/pem"
 	"fmt"
 	"io/ioutil"
 	"math/big"
@@ -71,7 +75,7 @@ func generate(c *cli.Context) error {
 	}
 	// Generate CA
 	fmt.Println("Generating CA")
-	pub, priv, err := pki.GenerateKey()
+	caPub, CAPriv, err := pki.GenerateKey()
 	if err != nil {
 		return err
 	}
@@ -80,7 +84,7 @@ func generate(c *cli.Context) error {
 		return err
 	}
 	ca, key, err := pki.CA(
-		pki.KeyPair(pub, priv),
+		pki.KeyPair(caPub, CAPriv),
 		pki.IsCA(),
 		pki.Subject(pkix.Name{CommonName: "micro-platform", Organization: []string{"Micro"}}),
 		pki.SerialNumber(serialNumber),
@@ -112,7 +116,7 @@ func generate(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		if err := ioutil.WriteFile(filepath.Join(outDir, "key.pem"), priv, 0600); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(outDir, "key.pem"), key2pem(priv), 0600); err != nil {
 			return err
 		}
 		csr, err := pki.CSR(
@@ -152,4 +156,14 @@ func generate(c *cli.Context) error {
 	}
 	fmt.Println("Certificates written to", c.String("out_dir"))
 	return nil
+}
+
+func key2pem(key ed25519.PrivateKey) []byte {
+	buf := &bytes.Buffer{}
+	x509Key, err := x509.MarshalPKCS8PrivateKey(key)
+	if err != nil {
+		panic(err)
+	}
+	pem.Encode(buf, &pem.Block{Type: "PRIVATE KEY", Bytes: x509Key})
+	return buf.Bytes()
 }

@@ -16,7 +16,9 @@ locals {
   registry_env = merge(
     local.common_env_vars,
     {
-      "MICRO_AUTH" = "jwt"
+      "MICRO_AUTH"             = "jwt"
+      "MICRO_REGISTRY"         = "etcd"
+      "MICRO_REGISTRY_ADDRESS" = "etcd-cluster.${var.resource_namespace}.svc"
     }
   )
 }
