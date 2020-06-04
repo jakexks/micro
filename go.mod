@@ -2,7 +2,7 @@ module github.com/micro/micro/v2
 
 go 1.13
 
-replace github.com/micro/go-micro/v2 => github.com/jakexks/go-micro/v2 v2.7.1-0.20200604161158-ecc4e82d86a7
+replace github.com/micro/go-micro/v2 => github.com/jakexks/go-micro/v2 v2.7.1-0.20200604161924-c95bdca2a3a2
 
 require (
 	github.com/aws/aws-sdk-go v1.23.0
