@@ -38,6 +38,7 @@ import (
 
 	// internals
 	inauth "github.com/micro/micro/v2/internal/auth"
+	"github.com/micro/micro/v2/internal/certs"
 	"github.com/micro/micro/v2/internal/platform"
 	_ "github.com/micro/micro/v2/internal/plugins"
 	"github.com/micro/micro/v2/internal/update"
@@ -350,6 +351,7 @@ func Setup(app *ccli.App, options ...micro.Option) {
 	app.Commands = append(app.Commands, build.Commands()...)
 	app.Commands = append(app.Commands, web.Commands(options...)...)
 	app.Commands = append(app.Commands, config.Commands(options...)...)
+	app.Commands = append(app.Commands, certs.Commands()...)
 
 	// add the init command for our internal operator
 	app.Commands = append(app.Commands, &ccli.Command{
