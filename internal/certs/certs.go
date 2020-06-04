@@ -14,10 +14,13 @@ import (
 
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2/util/pki"
+
+	"github.com/mitchellh/go-homedir"
 )
 
 // Commands returns certs' commands
 func Commands() []*cli.Command {
+	home, _ := homedir.Dir()
 	return []*cli.Command{
 		{
 			Name:  "certs",
@@ -26,7 +29,7 @@ func Commands() []*cli.Command {
 				&cli.StringFlag{
 					Name:  "out_dir",
 					Usage: "Output Directory",
-					Value: filepath.Join(os.TempDir(), "certs"),
+					Value: filepath.Join(home, "certs"),
 				},
 			},
 			Subcommands: []*cli.Command{
@@ -37,7 +40,22 @@ func Commands() []*cli.Command {
 						&cli.StringSliceFlag{
 							Name:  "services",
 							Usage: "list of services to generate certificates for",
-							Value: cli.NewStringSlice("go.micro", "go.micro.api"),
+							Value: cli.NewStringSlice(
+								"go.micro",
+								"go.micro.api",
+								"go.micro.api.auth",
+								"go.micro.auth",
+								"go.micro.bot",
+								"go.micro.broker",
+								"go.micro.debug",
+								"go.micro.init",
+								"go.micro.network",
+								"go.micro.proxy",
+								"go.micro.registry",
+								"go.micro.router",
+								"go.micro.runtime",
+								"go.micro.web",
+							),
 						},
 					},
 					Action: generate,
